@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lokapremysl\\source\\repos\\Skoda\\Skoda.csproj": {}
+    "D:\\temp\\GitHub\\Skoda\\Skoda\\Skoda.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lokapremysl\\source\\repos\\Skoda\\Skoda.csproj": {
+    "D:\\temp\\GitHub\\Skoda\\Skoda\\Skoda.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lokapremysl\\source\\repos\\Skoda\\Skoda.csproj",
+        "projectUniqueName": "D:\\temp\\GitHub\\Skoda\\Skoda\\Skoda.csproj",
         "projectName": "Skoda",
-        "projectPath": "C:\\Users\\lokapremysl\\source\\repos\\Skoda\\Skoda.csproj",
+        "projectPath": "D:\\temp\\GitHub\\Skoda\\Skoda\\Skoda.csproj",
         "packagesPath": "C:\\Users\\lokapremysl\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lokapremysl\\source\\repos\\Skoda\\obj\\",
+        "outputPath": "D:\\temp\\GitHub\\Skoda\\Skoda\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

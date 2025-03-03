@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Skoda")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b914e6647aa47f98f8506d060c358704acdbaeb9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Skoda")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Skoda")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

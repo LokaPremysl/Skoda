@@ -11,6 +11,7 @@ namespace Cars
         public event Action LoadXML_View;
         public event Action SaveXML_View;
         public event Func<Brand> CarInfo_View;
-        public event Func<int, List<WeekendSaleResult>> WeekendSale_View;
+        public event Func<(int state, List<WeekendSaleResult> result)> WeekendSale_View;
+        public event Func<int> CheckTableData_View;
     }
 }

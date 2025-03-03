@@ -15,7 +15,6 @@ namespace Cars
     internal class Presenter
     {
         Brand cars = new Brand();
-        bool done = false;
 
         private readonly IView view;
         public Presenter(IView view)
@@ -25,6 +24,7 @@ namespace Cars
             this.view.SaveXML_View += SerializationToXML;
             this.view.CarInfo_View += CarInfo;
             this.view.WeekendSale_View += CountWeekendSale;
+            this.view.CheckTableData_View += CheckTableData;
         }
 
         Brand CarInfo()
@@ -38,10 +38,16 @@ namespace Cars
             Brand carSorted = DoSortedList(cars);
             string fileName = string.Empty;
 
+            if(string.IsNullOrEmpty(carSorted.brandName)) 
+            {
+                MessageBox.Show($"Není načten soubor s daty k uložení", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
-                Title = "Save file as"
+                Title = "Uložit soubor jako"
             };
 
             if (saveFileDialog.ShowDialog() != DialogResult.OK)
@@ -60,6 +66,8 @@ namespace Cars
                 Indent = true
             };
 
+            if(carSorted != null) 
+            { 
             try
             {
                 using (FileStream fileStream = File.Create(fileName))
@@ -73,24 +81,16 @@ namespace Cars
             {
                 MessageBox.Show($"Error saving XML: {exception.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            }
+            
         }
 
         public void DeserializationFromXML()
         {
-
-            if (cars == null)
-            {
-                cars = new Brand { carModels = new List<CarModel>() };
-            }
-            else
-            {
-                cars.carModels.Clear();
-            }
-
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*",
-                Title = "Open file"
+                Title = "Otevřít soubor"
             };
 
             if (openFileDialog.ShowDialog() != DialogResult.OK)
@@ -109,16 +109,17 @@ namespace Cars
 
                     using (XmlReader reader = XmlReader.Create(projectLoadStream, settings))
                     {
-                        Brand deserializedData = serializer.Deserialize(reader) as Brand;
+                        Brand? deserializedData = serializer.Deserialize(reader) as Brand;
                         if (deserializedData != null)
                         {
+                            cars.carModels.Clear();
                             cars = deserializedData;
                         }
                     }
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show($"Error loading XML: {exception.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Soubor XML neobsahuje data v požadovaném formátu\n\n {exception.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -126,6 +127,7 @@ namespace Cars
         public Brand DoSortedList(Brand unsortedData)
         {
             Brand sortedData = new Brand();
+            sortedData.brandName = unsortedData.brandName;
             Dictionary<string, CarModel> dic = new Dictionary<string, CarModel>();
 
             foreach (var carModel in unsortedData.carModels)
@@ -148,36 +150,57 @@ namespace Cars
             return sortedData;
         }
 
-        public List<WeekendSaleResult> CountWeekendSale(int a)
+        public (int, List<WeekendSaleResult>) CountWeekendSale()
         {
+            int checkState = 0;
             List<WeekendSaleResult> weekendSaleAll = new List<WeekendSaleResult>();
-            var sortedCarList = DoSortedList(cars);
 
-            foreach (var carModel in sortedCarList.carModels)
+            if (string.IsNullOrEmpty(cars.brandName))
             {
-                double totalPriceNoTax = 0;
-                double totalPriceWithTax = 0;
-
-                foreach (var car in carModel.cars)
-                {
-                    if (car.dateOfSale.DayOfWeek == DayOfWeek.Saturday || car.dateOfSale.DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        totalPriceNoTax += car.price;
-                        totalPriceWithTax += car.taxRate * 0.01 * car.price + car.price;
-                    }
-                }
-
-                var weekendSale = new WeekendSaleResult
-                {
-                    brand = sortedCarList.brandName,
-                    model = carModel.modelName,
-                    priceTotalNoTax = totalPriceNoTax,
-                    priceTotalAddTax = totalPriceWithTax
-                };
-                weekendSaleAll.Add(weekendSale);
+                checkState = 1;
             }
-            return weekendSaleAll;
+            else
+            {
+                checkState = 2;
 
+                var sortedCarList = DoSortedList(cars);
+
+                foreach (var carModel in sortedCarList.carModels)
+                {
+                    double totalPriceNoTax = 0;
+                    double totalPriceWithTax = 0;
+
+                    foreach (var car in carModel.cars)
+                    {
+                        if (car.dateOfSale.DayOfWeek == DayOfWeek.Saturday || car.dateOfSale.DayOfWeek == DayOfWeek.Sunday)
+                        {
+                            totalPriceNoTax += car.price;
+                            totalPriceWithTax += car.taxRate * 0.01 * car.price + car.price;
+                        }
+                    }
+
+                    var weekendSale = new WeekendSaleResult
+                    {
+                        brand = sortedCarList.brandName,
+                        model = carModel.modelName,
+                        priceTotalNoTax = totalPriceNoTax,
+                        priceTotalAddTax = totalPriceWithTax
+                    };
+                    weekendSaleAll.Add(weekendSale);
+                }
+            }
+            return (checkState, weekendSaleAll);
+
+        }
+        public int CheckTableData()
+        {
+            int checkState = 0;
+
+            if (string.IsNullOrEmpty(cars.brandName))
+            {
+                checkState = 1;
+            }
+            return checkState;
         }
     }
 }
